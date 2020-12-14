@@ -1,4 +1,4 @@
-from flask import Flask, request, abort
+from flask import Flask, request
 from flask_bcrypt import Bcrypt
 from schemas import UserSchema, MedicationSchema, DemandSchema, OrderSchema
 from marshmallow import ValidationError
@@ -23,12 +23,12 @@ def create_user():
     parsed_data = {'username': data['username'], 'email': data['email'],
                    'password_hash': bcrypt.generate_password_hash(data['password']).decode('utf-8')}
     if not session.query(User).filter(User.username == parsed_data['username']).one_or_none() is None:
-        return abort(400, 'username busy')
+        return 'username busy', 400
 
     try:
         user = user_schema.load(parsed_data)
     except ValidationError as err:
-        return abort(400, err.messages)
+        return err.messages, 400
     app.logger.info('created user')
     session.add(user)
     session.commit()
@@ -43,11 +43,11 @@ def login():
 
     found_user = session.query(User).filter(User.username == username).one_or_none()
     if found_user is None:
-        return abort(400, 'invalid username')
+        return 'invalid username', 400
 
     password_ok = bcrypt.check_password_hash(found_user.password_hash, password)
     if not password_ok:
-        return abort(400, 'invalid password')
+        return 'invalid password', 400
     # TODO replace with token generation
     return 'token placeholder'
 
@@ -65,9 +65,9 @@ def find_user(user_id):
     try:
         schema.dump(found_user)
     except ValidationError as err:
-        return abort(400, 'invalid id')
+        return 'invalid id', 400
     if found_user is None:
-        return abort(404, 'user not found')
+        return 'user not found', 404
     user_schema = UserSchema(exclude=['password_hash'])
     user = user_schema.dump(found_user)
     return user
@@ -93,7 +93,7 @@ def edit_user():
     try:
         validate_update(data)
     except ValidationError as err:
-        return abort(400, err.messages)
+        return err.messages, 400
     found_user = session.query(User).filter(User.id == data['id']).one_or_none()
     found_user.username = data['username']
     found_user.email = data['email']
@@ -107,7 +107,7 @@ def edit_user():
 def del_user(user_id):
     found_user = session.query(User).filter(User.id == user_id).one_or_none()
     if found_user is None:
-        return abort(400, 'invalid id')
+        return 'invalid id', 400
     session.delete(found_user)
     session.commit()
     return ''
@@ -121,7 +121,7 @@ def create_med():
     try:
         medication = med_schema.load(med_dict)
     except ValidationError as err:
-        return abort(400, err.messages)
+        return err.messages, 400
     session.add(medication)
     session.commit()
     return med_schema.dump(medication)
@@ -133,10 +133,10 @@ def get_med(med_id):
     try:
         validation_schema.load({'id': med_id})
     except ValidationError as err:
-        return abort(400, err.messages)
+        return err.messages, 400
     found_med = session.query(Medication).filter(Medication.id == med_id).one_or_none()
     if found_med is None:
-        return abort(404)
+        return 'medicine not found', 404
     med_schema = MedicationSchema()
     return med_schema.dump(found_med)
 
@@ -147,7 +147,7 @@ def change_med():
     validation_schema = MedicationSchema()
     found_med = session.query(Medication).filter(Medication.id == data['id']).one_or_none()
     if found_med is None:
-        return abort(404)
+        return 'medicine not found', 404
     got_data = {
         'id': data['id'],
         'name': data['name'],
@@ -159,7 +159,7 @@ def change_med():
     try:
         validation_schema.load(got_data)
     except ValidationError as err:
-        return abort(400, err.messages)
+        return err.messages, 400
     found_med.name = got_data['name']
     found_med.description = got_data['description']
     found_med.cost = got_data['cost']
