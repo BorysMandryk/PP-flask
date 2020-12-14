@@ -25,8 +25,8 @@ class MedicationSchema(Schema):
 
 class OrderSchema(Schema):
     id = fields.Int()
-    user = fields.Nested(UserSchema)
-    medication = fields.Nested(MedicationSchema)
+    user_id = fields.Int()
+    med_id = fields.Int()
     amount = fields.Int()
     completed = fields.Bool()
 
@@ -36,8 +36,8 @@ class OrderSchema(Schema):
 
 class DemandSchema(Schema):
     id = fields.Int()
-    user = fields.Nested(UserSchema)
-    medication = fields.Nested(MedicationSchema)
+    user_id = fields.Int()
+    med_id = fields.Int()
     amount = fields.Int()
 
     @post_load
