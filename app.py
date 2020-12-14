@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, jsonify
 from flask_bcrypt import Bcrypt
 from schemas import UserSchema, MedicationSchema, DemandSchema, OrderSchema
 from marshmallow import ValidationError
@@ -169,7 +169,7 @@ def change_med():
     return validation_schema.dump(found_med)
 
 
-@app.route('/store/order', methods=['POST'])
+@app.route('/store/orders', methods=['POST'])
 def order_med():
     data = request.json
     # cretatng schema just for validation
@@ -206,6 +206,24 @@ def order_med():
         session.add(order)
         session.commit()
         return validation_schema.dump(got_data)
+
+
+@app.route('/store/orders/<order_id>')
+def get_order(order_id):
+    try:
+        OrderSchema().load({'id': order_id})
+    except ValidationError as err:
+        return err.messages, 400
+    found_order = session.query(Order).filter(Order.id == order_id).one_or_none()
+    if found_order is None:
+        return 'order not found', 404
+    return OrderSchema().dump(found_order)
+
+
+@app.route('/store/demands')
+def get_demands():
+    found_demands = session.query(Demand).all()
+    return jsonify(DemandSchema(many=True).dump(found_demands))
 
 
 if __name__ == "__main__":
