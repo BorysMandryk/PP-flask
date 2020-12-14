@@ -2,7 +2,7 @@ from flask import Flask, request, abort
 from flask_bcrypt import Bcrypt
 from schemas import UserSchema, MedicationSchema, DemandSchema, OrderSchema
 from marshmallow import ValidationError
-from db.alembic_orm.add import Session, User
+from db.alembic_orm.add import Session, User, Medication, Order, Demand
 
 app = Flask(__name__)
 bcrypt = Bcrypt(app)
@@ -111,6 +111,62 @@ def del_user(user_id):
     session.delete(found_user)
     session.commit()
     return ''
+
+
+@app.route('/medications', methods=['POST'])
+def create_med():
+    data = request.json
+    med_schema = MedicationSchema()
+    med_dict = {'name': data['name'], 'description': data['description'], 'cost': data['cost'], 'quantity': data['quantity'], 'in_stock': data['inStock']}
+    try:
+        medication = med_schema.load(med_dict)
+    except ValidationError as err:
+        return abort(400, err.messages)
+    session.add(medication)
+    session.commit()
+    return med_schema.dump(medication)
+
+
+@app.route('/medications/<med_id>')
+def get_med(med_id):
+    validation_schema = MedicationSchema(only=['id'])
+    try:
+        validation_schema.load({'id': med_id})
+    except ValidationError as err:
+        return abort(400, err.messages)
+    found_med = session.query(Medication).filter(Medication.id == med_id).one_or_none()
+    if found_med is None:
+        return abort(404)
+    med_schema = MedicationSchema()
+    return med_schema.dump(found_med)
+
+
+@app.route('/medications', methods=['PUT'])
+def change_med():
+    data = request.json
+    validation_schema = MedicationSchema()
+    found_med = session.query(Medication).filter(Medication.id == data['id']).one_or_none()
+    if found_med is None:
+        return abort(404)
+    got_data = {
+        'id': data['id'],
+        'name': data['name'],
+        'description': data['description'],
+        'cost': data['cost'],
+        'quantity': data['quantity'],
+        'in_stock': data['inStock']
+    }
+    try:
+        validation_schema.load(got_data)
+    except ValidationError as err:
+        return abort(400, err.messages)
+    found_med.name = got_data['name']
+    found_med.description = got_data['description']
+    found_med.cost = got_data['cost']
+    found_med.quantity = got_data['quantity']
+    found_med.in_stock = got_data['in_stock']
+    session.commit()
+    return validation_schema.dump(found_med)
 
 
 if __name__ == "__main__":
