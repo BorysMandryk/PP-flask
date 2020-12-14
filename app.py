@@ -169,5 +169,44 @@ def change_med():
     return validation_schema.dump(found_med)
 
 
+@app.route('/store/order', methods=['POST'])
+def order_med():
+    data = request.json
+    # cretatng schema just for validation
+    validation_schema = OrderSchema()
+    got_data = {
+        'user_id': data['userId'],
+        'med_id': data['medicationId'],
+        'amount': data['amount']
+        # 'completed': 'false'
+    }
+    # executing validation by field type
+    try:
+        validation_schema.load(got_data)
+    except ValidationError as err:
+        return err.messages, 400
+    # checking the medicine
+    found_med = session.query(Medication)\
+                        .filter(Medication.id == got_data['med_id']).one_or_none()
+    if found_med is None:
+        return 'medicine not found', 400
+    # business logic
+    if not found_med.in_stock:
+        demand_schema = DemandSchema()
+        demand = demand_schema.load(got_data)
+        session.add(demand)
+        session.commit()
+        return demand_schema.dump(got_data), 201
+    else:
+        got_data['completed'] = 'false'
+        found_med.quantity -= min(int(got_data['amount']), found_med.quantity)
+        if found_med.quantity == 0:
+            found_med.in_stock = False
+        order = validation_schema.load(got_data)
+        session.add(order)
+        session.commit()
+        return validation_schema.dump(got_data)
+
+
 if __name__ == "__main__":
     app.run()
