@@ -20,6 +20,7 @@ class OrderSchema(Schema):
     med_id = fields.Int()
     amount = fields.Int()
     completed = fields.Bool()
+    medications = fields.Nested(MedicationSchema)
 
     @post_load
     def create_order(self, data, **kwargs):
@@ -30,6 +31,7 @@ class DemandSchema(Schema):
     user_id = fields.Int()
     med_id = fields.Int()
     amount = fields.Int()
+    medications = fields.Nested(MedicationSchema)
 
     @post_load
     def create_demand(self, data, **kwargs):
