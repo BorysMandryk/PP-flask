@@ -60,12 +60,12 @@ def logout():
 
 @app.route('/users/<user_id>')
 def find_user(user_id):
-    found_user = session.query(User).filter(User.id == user_id).one_or_none()
-    schema = UserSchema()
     try:
-        schema.dump(found_user)
+        UserSchema(only=['id']).load({'id': user_id})
     except ValidationError as err:
         return 'invalid id', 400
+    found_user = session.query(User).filter(User.id == user_id).one_or_none()
+    schema = UserSchema()
     if found_user is None:
         return 'user not found', 404
     user_schema = UserSchema(exclude=['password_hash'])

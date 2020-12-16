@@ -1,15 +1,6 @@
 from marshmallow import Schema, fields, post_load
 from db.alembic_orm.add import User, Medication, Order, Demand
 
-class UserSchema(Schema):
-    id = fields.Int()
-    email = fields.Email()
-    username = fields.Str()
-    password_hash = fields.Str()
-
-    @post_load
-    def create_user(self, data, **kwargs):
-        return User(**data)
 
 class MedicationSchema(Schema):
     id = fields.Int()
@@ -43,3 +34,15 @@ class DemandSchema(Schema):
     @post_load
     def create_demand(self, data, **kwargs):
         return Demand(**data)
+
+class UserSchema(Schema):
+    id = fields.Int()
+    email = fields.Email()
+    username = fields.Str()
+    password_hash = fields.Str()
+    orders = fields.List(fields.Nested(OrderSchema))
+    demands = fields.List(fields.Nested(DemandSchema))
+
+    @post_load
+    def create_user(self, data, **kwargs):
+        return User(**data)
