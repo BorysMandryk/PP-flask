@@ -73,28 +73,28 @@ def find_user(user_id):
     return user
 
 
-def validate_update(data):
-    got_id = data['id']
-    found_user = session.query(User).filter(User.id == got_id).one_or_none()
+def validate_update(data, user_id):
+    # got_id = data['id']
+    found_user = session.query(User).filter(User.id == user_id).one_or_none()
     if found_user is None:
         raise ValidationError(message='invalid id')
     username = data['username']
     username_user = session.query(User).filter(User.username == username).one_or_none()
-    if found_user is username_user:
+    if found_user.username != username and not username_user is None:
         raise ValidationError(message='username is busy')
     user_data = {'username': data['username'], 'email': data['email']}
     schema = UserSchema()
-    schema.dump(user_data)
+    schema.load(user_data)
 
 
-@app.route('/users', methods=['PUT'])
-def edit_user():
+@app.route('/users/<user_id>', methods=['PUT'])
+def edit_user(user_id):
     data = request.json
     try:
-        validate_update(data)
+        validate_update(data, user_id)
     except ValidationError as err:
-        return err.messages, 400
-    found_user = session.query(User).filter(User.id == data['id']).one_or_none()
+        return jsonify(err.messages), 400
+    found_user = session.query(User).filter(User.id == user_id).one_or_none()
     found_user.username = data['username']
     found_user.email = data['email']
     session.commit()
@@ -141,15 +141,19 @@ def get_med(med_id):
     return med_schema.dump(found_med)
 
 
-@app.route('/medications', methods=['PUT'])
-def change_med():
+@app.route('/medications/<med_id>', methods=['PUT'])
+def change_med(med_id):
+    # validate id
+    try:
+        MedicationSchema(only=['id']).load({'id': med_id})
+    except ValidationError as err:
+        return err.messages, 400
     data = request.json
     validation_schema = MedicationSchema()
-    found_med = session.query(Medication).filter(Medication.id == data['id']).one_or_none()
+    found_med = session.query(Medication).filter(Medication.id == med_id).one_or_none()
     if found_med is None:
         return 'medicine not found', 404
     got_data = {
-        'id': data['id'],
         'name': data['name'],
         'description': data['description'],
         'cost': data['cost'],
@@ -164,7 +168,7 @@ def change_med():
     found_med.description = got_data['description']
     found_med.cost = got_data['cost']
     found_med.quantity = got_data['quantity']
-    found_med.in_stock = got_data['in_stock']
+    found_med.in_stock = bool(got_data['in_stock'])
     session.commit()
     return validation_schema.dump(found_med)
 
