@@ -182,7 +182,6 @@ def order_med():
         'user_id': data['userId'],
         'med_id': data['medicationId'],
         'amount': data['amount']
-        # 'completed': 'false'
     }
     # executing validation by field type
     try:
@@ -195,7 +194,7 @@ def order_med():
     if found_med is None:
         return 'medicine not found', 400
     # business logic
-    if not found_med.in_stock:
+    if found_med.quantity < int(got_data['amount']):
         demand_schema = DemandSchema()
         demand = demand_schema.load(got_data)
         session.add(demand)
@@ -203,7 +202,7 @@ def order_med():
         return demand_schema.dump(got_data), 201
     else:
         got_data['completed'] = 'false'
-        found_med.quantity -= min(int(got_data['amount']), found_med.quantity)
+        found_med.quantity -= int(got_data['amount'])
         if found_med.quantity == 0:
             found_med.in_stock = False
         order = validation_schema.load(got_data)
