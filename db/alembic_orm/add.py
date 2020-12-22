@@ -1,4 +1,5 @@
-from sqlalchemy import create_engine, Integer, Float, Column, String, Boolean, ForeignKey
+import enum
+from sqlalchemy import create_engine, Integer, Float, Column, String, Boolean, ForeignKey, Enum
 from sqlalchemy.dialects.mysql import TINYTEXT
 from sqlalchemy.ext.declarative import declarative_base, DeclarativeMeta
 from sqlalchemy.orm import sessionmaker, relationship
@@ -8,12 +9,18 @@ Base: DeclarativeMeta = declarative_base()
 Session = sessionmaker(bind=engine)
 
 
+class RoleEnum(enum.Enum):
+    provisor = 0
+    user = 1
+
+
 class User(Base):
     __tablename__ = "users"
     id = Column(Integer, primary_key=True)
     email = Column(String(255))
     username = Column(String(255))
     password_hash = Column(String(255))
+    role = Column(Enum(RoleEnum))
     orders = relationship('Order', back_populates='users', cascade="all, delete-orphan")
     demands = relationship('Demand', back_populates='users', cascade="all, delete-orphan")
     """user_orders = relationship("Orders", back_populates="user")

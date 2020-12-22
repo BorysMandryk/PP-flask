@@ -1,5 +1,6 @@
 from marshmallow import Schema, fields, post_load
-from db.alembic_orm.add import User, Medication, Order, Demand
+from marshmallow_enum import EnumField
+from db.alembic_orm.add import User, Medication, Order, Demand, RoleEnum
 
 
 class MedicationSchema(Schema):
@@ -14,6 +15,7 @@ class MedicationSchema(Schema):
     def create_medication(self, data, **kwargs):
         return Medication(**data)
 
+
 class OrderSchema(Schema):
     id = fields.Int()
     user_id = fields.Int()
@@ -26,6 +28,7 @@ class OrderSchema(Schema):
     def create_order(self, data, **kwargs):
         return Order(**data)
 
+
 class DemandSchema(Schema):
     id = fields.Int()
     user_id = fields.Int()
@@ -37,6 +40,7 @@ class DemandSchema(Schema):
     def create_demand(self, data, **kwargs):
         return Demand(**data)
 
+
 class UserSchema(Schema):
     id = fields.Int()
     email = fields.Email()
@@ -44,6 +48,7 @@ class UserSchema(Schema):
     password_hash = fields.Str()
     orders = fields.List(fields.Nested(OrderSchema))
     demands = fields.List(fields.Nested(DemandSchema))
+    role = EnumField(RoleEnum)
 
     @post_load
     def create_user(self, data, **kwargs):
