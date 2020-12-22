@@ -79,6 +79,17 @@ bcrypt = "*"
 Flask = "*"
 
 [[package]]
+name = "flask-httpauth"
+version = "4.2.0"
+description = "Basic and Digest HTTP authentication for Flask routes"
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+Flask = "*"
+
+[[package]]
 name = "gunicorn"
 version = "20.0.4"
 description = "WSGI HTTP Server for UNIX"
@@ -233,7 +244,7 @@ watchdog = ["watchdog"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8.5"
-content-hash = "90249bcdc27fdafa156d3b22332f92fe60e0cbe028fa92f37747bd9ae2c13d21"
+content-hash = "d32009e4fe23f56d2e62d3ed138c4a8f7a67a5a8105caed179ab68184442b91d"
 
 [metadata.files]
 alembic = [
@@ -297,6 +308,10 @@ flask = [
 ]
 flask-bcrypt = [
     {file = "Flask-Bcrypt-0.7.1.tar.gz", hash = "sha256:d71c8585b2ee1c62024392ebdbc447438564e2c8c02b4e57b56a4cafd8d13c5f"},
+]
+flask-httpauth = [
+    {file = "Flask-HTTPAuth-4.2.0.tar.gz", hash = "sha256:8c7e49e53ce7dc14e66fe39b9334e4b7ceb8d0b99a6ba1c3562bb528ef9da84a"},
+    {file = "Flask_HTTPAuth-4.2.0-py2.py3-none-any.whl", hash = "sha256:3fcedb99a03985915335a38c35bfee6765cbd66d7f46440fa3b42ae94a90fac7"},
 ]
 gunicorn = [
     {file = "gunicorn-20.0.4-py2.py3-none-any.whl", hash = "sha256:cd4a810dd51bf497552cf3f863b575dabd73d6ad6a91075b65936b151cbf4f9c"},

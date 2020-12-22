@@ -3,6 +3,7 @@ from flask_bcrypt import Bcrypt
 from schemas import UserSchema, MedicationSchema, DemandSchema, OrderSchema
 from marshmallow import ValidationError
 from db.alembic_orm.add import Session, User, Medication, Order, Demand
+from flask_httpauth import HTTPBasicAuth
 
 app = Flask(__name__)
 bcrypt = Bcrypt(app)
