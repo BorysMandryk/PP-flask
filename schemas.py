@@ -48,7 +48,7 @@ class UserSchema(Schema):
     password_hash = fields.Str()
     orders = fields.List(fields.Nested(OrderSchema))
     demands = fields.List(fields.Nested(DemandSchema))
-    role = EnumField(RoleEnum)
+    role = EnumField(RoleEnum, default=RoleEnum.user, missing="user")
 
     @post_load
     def create_user(self, data, **kwargs):

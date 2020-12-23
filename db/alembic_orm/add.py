@@ -28,6 +28,9 @@ class User(Base):
     user_demands = relationship("Demands", back_populates="user")
     med_demands = relationship('Demands', back_populates="med")"""
 
+    def get_role(self):
+        return self.role
+
 
 class Medication(Base):
     __tablename__ = "medications"

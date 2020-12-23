@@ -1,18 +1,18 @@
-from db.alembic_orm.add import User, Medication, Order, Demand, Session
+from db.alembic_orm.add import User, Medication, Order, Demand, Session, RoleEnum
 
 session = Session()
 
 users = [
     User(email='nicik@gmail.com', username='Anatoliy Zakharchenko',
-          password_hash='EF797C8118F02DFB649607DD5D3F8C7623048C9C063D532CC95C5ED7A898A64F', role='user'),
+          password_hash='EF797C8118F02DFB649607DD5D3F8C7623048C9C063D532CC95C5ED7A898A64F', role=RoleEnum.user),
     User(email='supercolor@gmail.com', username='Anatoliy Zakharchenko',
-          password_hash='9377935330AC2D6DF60B8040C482E839286B91AF0C3CF44CC14621EC13DF26EF', role='user'),
+          password_hash='9377935330AC2D6DF60B8040C482E839286B91AF0C3CF44CC14621EC13DF26EF', role=RoleEnum.user),
     User(email='ohimnewuser@ukr.net', username='Romeo Gospodiowych',
-          password_hash='9B8769A4A742959A2D0298C36FB70623F2DFACDA8436237DF08D8DFD5B37374C', role='provisor'),
+          password_hash='9B8769A4A742959A2D0298C36FB70623F2DFACDA8436237DF08D8DFD5B37374C', role=RoleEnum.provisor),
     User(email='pdurov@mail.ru', username='Rick Romeos',
-          password_hash='05F03A7011D2E3F0738F6E0E1C9491A1C0FAD74AA16528B4414A7F4A5978A641', role='user'),
+          password_hash='05F03A7011D2E3F0738F6E0E1C9491A1C0FAD74AA16528B4414A7F4A5978A641', role=RoleEnum.user),
     User(email='linakilchenko@mail.ru', username='Lina Romarko',
-          password_hash='131E27B7715C43825F14696B907812D34FB86A529DD8C98FEDBF87016F5D9149', role='user'),
+          password_hash='131E27B7715C43825F14696B907812D34FB86A529DD8C98FEDBF87016F5D9149', role=RoleEnum.user),
 ]
 
 medicatioms = [
