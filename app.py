@@ -36,7 +36,7 @@ def create_user():
     app.logger.info('created schema')
     parsed_data = {'username': data['username'], 'email': data['email'],
                    'password_hash': bcrypt.generate_password_hash(data['password']).decode('utf-8')}
-    if "role" in parsed_data:
+    if "role" in data:
         parsed_data['role'] = data['role']
     if not session.query(User).filter(User.username == parsed_data['username']).one_or_none() is None:
         return 'username busy', 400
@@ -174,6 +174,19 @@ def change_med(med_id):
     return validation_schema.dump(found_med)
 
 
+@app.route('/medications/<med_id>', methods=['DELETE'])
+@auth.login_required(role=RoleEnum.provisor)
+def delete_med(med_id):
+    try:
+        MedicationSchema(only=['id']).load({'id': med_id})
+    except ValidationError as err:
+        return err.messages, 400
+    med = session.query(Medication).filter(Medication.id == med_id).one_or_none()
+    session.delete(med)
+    session.commit()
+    return ''
+
+
 @app.route('/store/orders', methods=['POST'])
 @auth.login_required(role=RoleEnum.user)
 def order_med():
@@ -192,8 +205,7 @@ def order_med():
     except ValidationError as err:
         return err.messages, 400
     # checking the medicine
-    found_med = session.query(Medication)\
-                        .filter(Medication.id == got_data['med_id']).one_or_none()
+    found_med = session.query(Medication).filter(Medication.id == got_data['med_id']).one_or_none()
     if found_med is None:
         return 'medicine not found', 400
     # business logic

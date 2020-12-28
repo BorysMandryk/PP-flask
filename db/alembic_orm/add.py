@@ -41,8 +41,8 @@ class Medication(Base):
     quantity = Column(Integer)
     in_stock = Column(Boolean)
 
-    orders = relationship('Order', back_populates='medications')
-    demands = relationship('Demand', back_populates='medications')
+    orders = relationship('Order', back_populates='medications', cascade="all, delete-orphan")
+    demands = relationship('Demand', back_populates='medications', cascade="all, delete-orphan")
 
 
 class Order(Base):
