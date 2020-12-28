@@ -1,11 +1,17 @@
-from sqlalchemy import create_engine, Integer, Float, Column, String, Boolean, ForeignKey
+import enum
+from sqlalchemy import create_engine, Integer, Float, Column, String, Boolean, ForeignKey, Enum
 from sqlalchemy.dialects.mysql import TINYTEXT
 from sqlalchemy.ext.declarative import declarative_base, DeclarativeMeta
 from sqlalchemy.orm import sessionmaker, relationship
 
-engine = create_engine('mysql+pymysql://sqlalchemy:flaskpass@localhost/flask_app?charset=utf8mb4')
+engine = create_engine('mysql+pymysql://lab:password@localhost:3306/pplab?charset=utf8mb4')
 Base: DeclarativeMeta = declarative_base()
 Session = sessionmaker(bind=engine)
+
+
+class RoleEnum(enum.Enum):
+    provisor = 0
+    user = 1
 
 
 class User(Base):
@@ -14,12 +20,16 @@ class User(Base):
     email = Column(String(255))
     username = Column(String(255))
     password_hash = Column(String(255))
+    role = Column(Enum(RoleEnum))
     orders = relationship('Order', back_populates='users', cascade="all, delete-orphan")
     demands = relationship('Demand', back_populates='users', cascade="all, delete-orphan")
     """user_orders = relationship("Orders", back_populates="user")
     med_orders = relationship("Orders", back_populates="med")
     user_demands = relationship("Demands", back_populates="user")
     med_demands = relationship('Demands', back_populates="med")"""
+
+    def get_role(self):
+        return self.role
 
 
 class Medication(Base):
@@ -31,8 +41,8 @@ class Medication(Base):
     quantity = Column(Integer)
     in_stock = Column(Boolean)
 
-    orders = relationship('Order', back_populates='medications')
-    demands = relationship('Demand', back_populates='medications')
+    orders = relationship('Order', back_populates='medications', cascade="all, delete-orphan")
+    demands = relationship('Demand', back_populates='medications', cascade="all, delete-orphan")
 
 
 class Order(Base):
