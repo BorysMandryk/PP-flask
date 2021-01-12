@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify
 from flask_bcrypt import Bcrypt
 from schemas import UserSchema, MedicationSchema, DemandSchema, OrderSchema
 from marshmallow import ValidationError
-from db.alembic_orm.add import Session, User, Medication, Order, Demand, RoleEnum
+from db.alembic_orm.add import Session, User, Medication, Order, Demand, RoleEnum, engine
 from flask_httpauth import HTTPBasicAuth
 
 app = Flask(__name__)
