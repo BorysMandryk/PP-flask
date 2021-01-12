@@ -15,6 +15,7 @@ Flask-Bcrypt = "^0.7.1"
 Flask-HTTPAuth = "^4.2.0"
 cryptography = "^3.3.1"
 marshmallow-enum = "^1.5.1"
+Flask-Testing = "^0.8.1"
 
 [tool.poetry.dev-dependencies]
 [build-system]
