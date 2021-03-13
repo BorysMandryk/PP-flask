@@ -207,7 +207,7 @@ def order_med():
     # checking the medicine
     found_med = session.query(Medication).filter(Medication.id == got_data['med_id']).one_or_none()
     if found_med is None:
-        return 'medicine not found', 400
+        return 'medicine not found', 404
     # business logic
     if found_med.quantity < int(got_data['amount']):
         demand_schema = DemandSchema()
@@ -245,7 +245,7 @@ def get_order(order_id):
 @auth.login_required(role=RoleEnum.provisor)
 def get_demands():
     found_demands = session.query(Demand).all()
-    return jsonify(DemandSchema(many=True).dump(found_demands))
+    return jsonify(DemandSchema(many=True).dump(found_demands)), 200
 
 
 if __name__ == "__main__":
