@@ -53,3 +53,8 @@ class UserSchema(Schema):
     @post_load
     def create_user(self, data, **kwargs):
         return User(**data)
+
+
+class LoginSchema(Schema):
+    username = fields.Str(required=True)
+    password = fields.Str(required=True)

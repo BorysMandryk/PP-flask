@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_bcrypt import Bcrypt
-from schemas import UserSchema, MedicationSchema, DemandSchema, OrderSchema
+from flask_cors import CORS
+from schemas import UserSchema, MedicationSchema, DemandSchema, OrderSchema, LoginSchema
 from marshmallow import ValidationError
 from db.alembic_orm.add import Session, User, Medication, Order, Demand, RoleEnum, engine
 from flask_httpauth import HTTPBasicAuth
@@ -9,6 +10,7 @@ app = Flask(__name__)
 auth = HTTPBasicAuth()
 bcrypt = Bcrypt(app)
 session = Session()
+CORS(app)
 
 
 @auth.get_user_roles
@@ -21,6 +23,19 @@ def verify_password(username, password):
     user = session.query(User).filter(User.username == username).first()
     if user and bcrypt.check_password_hash(user.password_hash, password):
         return user
+
+
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.json
+    login_schema = LoginSchema()
+    try:
+        login_schema.validate(data)
+    except ValidationError:
+        return '', 400
+    user: User = session.query(User).filter(User.username == data['username']).first()
+    login_result: bool = user is not None and bcrypt.check_password_hash(user.password_hash, data['password'])
+    return {'result': login_result}
 
 
 @app.route('/api/v1/hello-world-15')
