@@ -1,6 +1,5 @@
 import enum
-from sqlalchemy import create_engine, Integer, Float, Column, String, Boolean, ForeignKey, Enum, MetaData
-from sqlalchemy.dialects.mysql import TINYTEXT
+from sqlalchemy import create_engine, Integer, Float, Column, String, Text, Boolean, DateTime, ForeignKey, Enum, MetaData
 from sqlalchemy.ext.declarative import declarative_base, DeclarativeMeta
 from sqlalchemy.orm import sessionmaker, relationship
 
@@ -17,17 +16,15 @@ class RoleEnum(enum.Enum):
 
 class User(Base):
     __tablename__ = "users"
-    id = Column(Integer, primary_key=True)
-    email = Column(String(255))
-    username = Column(String(255))
-    password_hash = Column(String(255))
-    role = Column(Enum(RoleEnum))
+    id = Column(Integer, nullable=False, primary_key=True, autoincrement=True)
+    email = Column(String(255), nullable=False, unique=True)
+    first_name = Column(String(50))
+    last_name = Column(String(50))
+    patronymic = Column(String(50))
+    password_hash = Column(String(255), nullable=False)
+    role = Column(Enum(RoleEnum), nullable=False)
+    address = Column(String(255))
     orders = relationship('Order', back_populates='users', cascade="all, delete-orphan")
-    demands = relationship('Demand', back_populates='users', cascade="all, delete-orphan")
-    """user_orders = relationship("Orders", back_populates="user")
-    med_orders = relationship("Orders", back_populates="med")
-    user_demands = relationship("Demands", back_populates="user")
-    med_demands = relationship('Demands', back_populates="med")"""
 
     def get_role(self):
         return self.role
@@ -35,45 +32,36 @@ class User(Base):
 
 class Medication(Base):
     __tablename__ = "medications"
-    id = Column(Integer, primary_key=True)
-    name = Column(String(255))
-    description = Column(TINYTEXT)
+    id = Column(Integer, primary_key=True, nullable=False)
+    name = Column(String(255), nullable=False)
+    description = Column(Text())
     cost = Column(Float)
     quantity = Column(Integer)
-    in_stock = Column(Boolean)
+    on_sale = Column(Boolean, nullable=False)
 
-    orders = relationship('Order', back_populates='medications', cascade="all, delete-orphan")
-    demands = relationship('Demand', back_populates='medications', cascade="all, delete-orphan")
+    products = relationship('Product', back_populates='medications', cascade="all, delete-orphan")
 
 
 class Order(Base):
     __tablename__ = "orders"
-    id = Column(Integer, primary_key=True)
-    amount = Column(Integer)
-    completed = Column(Boolean)
+    id = Column(Integer, primary_key=True, nullable=False)
+    created_at = Column(DateTime, nullable=False)
+    completed = Column(Boolean, nullable=False)
 
-    user_id = Column(Integer, ForeignKey('users.id'))
+    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
     users = relationship('User', back_populates='orders')
 
-    med_id = Column(Integer, ForeignKey('medications.id'))
-    medications = relationship('Medication', back_populates='orders')
-    """
-    user = relationship("Users", back_populates="user_orders")
-    med_id = Column(Integer, ForeignKey('medications.med_id'))
-    med = relationship("Medications", back_populates="med_orders")"""
+    products = relationship('Product', back_populates='orders', cascade="all, delete-orphan")
 
 
-class Demand(Base):
-    __tablename__ = "demand"
-    id = Column(Integer, primary_key=True)
-    amount = Column(Integer)
+class Product(Base):
+    __tablename__ = "products"
+    id = Column(Integer, primary_key=True, nullable=False)
+    amount = Column(Integer, nullable=False)
 
-    user_id = Column(Integer, ForeignKey('users.id'))
-    users = relationship('User', back_populates='demands')
+    med_id = Column(Integer, ForeignKey('medications.id'), nullable=False)
+    medications = relationship('Medication', back_populates='products')
 
-    med_id = Column(Integer, ForeignKey('medications.id'))
-    medications = relationship('Medication', back_populates='demands')
-    """user_id = Column(Integer, ForeignKey('users.user_id'))
-    user = relationship("Users", back_populates="user_demands")
-    med_id = Column(Integer, ForeignKey('medications.med_id'))
-    med = relationship("Medications", back_populates="med_demands")"""
+    order_id = Column(Integer, ForeignKey('orders.id'), nullable=False)
+    orders = relationship('Order', back_populates='products')
+
