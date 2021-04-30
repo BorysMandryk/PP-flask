@@ -21,6 +21,7 @@ class User(Base):
     first_name = Column(String(50))
     last_name = Column(String(50))
     patronymic = Column(String(50))
+    phone = Column(String(10))
     password_hash = Column(String(255), nullable=False)
     role = Column(Enum(RoleEnum), nullable=False)
     address = Column(String(255))
