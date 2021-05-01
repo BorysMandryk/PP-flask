@@ -33,7 +33,7 @@ class User(Base):
 
 class Medication(Base):
     __tablename__ = "medications"
-    id = Column(Integer, primary_key=True, nullable=False)
+    id = Column(Integer, primary_key=True, nullable=False, autoincrement=True)
     name = Column(String(255), nullable=False)
     description = Column(Text())
     cost = Column(Float)
@@ -45,7 +45,7 @@ class Medication(Base):
 
 class Order(Base):
     __tablename__ = "orders"
-    id = Column(Integer, primary_key=True, nullable=False)
+    id = Column(Integer, primary_key=True, nullable=False, autoincrement=True)
     created_at = Column(DateTime, nullable=False)
     completed = Column(Boolean, nullable=False)
 
@@ -57,7 +57,7 @@ class Order(Base):
 
 class Product(Base):
     __tablename__ = "products"
-    id = Column(Integer, primary_key=True, nullable=False)
+    id = Column(Integer, primary_key=True, nullable=False, autoincrement=True)
     amount = Column(Integer, nullable=False)
 
     med_id = Column(Integer, ForeignKey('medications.id'), nullable=False)
