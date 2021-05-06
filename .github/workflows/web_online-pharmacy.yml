@@ -35,5 +35,5 @@ jobs:
       with:
         app-name: 'online-pharmacy'
         slot-name: 'production'
-        publish-profile: ${{ secrets.AzureAppService_PublishProfile_007c845edb7140f29716eb7ce2a837e0 }}
+        publish-profile: ${{ secrets.AzureAppService_PublishProfile_674a424f3e344d4b9674948b3c06a197 }}
         package: '.\app.zip'
