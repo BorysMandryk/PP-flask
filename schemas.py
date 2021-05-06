@@ -1,53 +1,54 @@
 from marshmallow import Schema, fields, post_load
 from marshmallow_enum import EnumField
-from db.alembic_orm.add import User, Medication, Order, Demand, RoleEnum
+from db.alembic_orm.add import User, Medication, Order, Product, RoleEnum
 
 
 class MedicationSchema(Schema):
     id = fields.Int()
-    name = fields.Str()
+    name = fields.Str(required=True)
     description = fields.Str()
     cost = fields.Int()
     quantity = fields.Int()
-    in_stock = fields.Bool()
+    on_sale = fields.Bool(required=True)
 
     @post_load
     def create_medication(self, data, **kwargs):
         return Medication(**data)
 
 
+class ProductSchema(Schema):
+    id = fields.Int()
+    amount = fields.Int(required=True)
+    med_id = fields.Int(required=True)
+    order_id = fields.Int()
+
+    @post_load
+    def create_product(self, data, **kwargs):
+        return Product(**data)
+
+
 class OrderSchema(Schema):
     id = fields.Int()
-    user_id = fields.Int()
-    med_id = fields.Int()
-    amount = fields.Int()
-    completed = fields.Bool()
-    medications = fields.Nested(MedicationSchema)
+    user_id = fields.Int(required=True)
+    created_at = fields.DateTime(format="%Y-%m-%d %H:%M:%S")
+    completed = fields.Bool(required=True)
+    products = fields.Nested(ProductSchema, many=True, required=True)
 
     @post_load
     def create_order(self, data, **kwargs):
         return Order(**data)
 
 
-class DemandSchema(Schema):
-    id = fields.Int()
-    user_id = fields.Int()
-    med_id = fields.Int()
-    amount = fields.Int()
-    medications = fields.Nested(MedicationSchema)
-
-    @post_load
-    def create_demand(self, data, **kwargs):
-        return Demand(**data)
-
-
 class UserSchema(Schema):
     id = fields.Int()
-    email = fields.Email()
-    username = fields.Str()
-    password_hash = fields.Str()
-    orders = fields.List(fields.Nested(OrderSchema))
-    demands = fields.List(fields.Nested(DemandSchema))
+    email = fields.Email(required=True)
+    first_name = fields.Str()
+    last_name = fields.Str()
+    patronymic = fields.Str()
+    password_hash = fields.Str(required=True)
+    phone = fields.Str()
+    address = fields.Str()
+    orders = fields.Nested(OrderSchema, many=True)
     role = EnumField(RoleEnum, default=RoleEnum.user, missing="user")
 
     @post_load
@@ -56,5 +57,5 @@ class UserSchema(Schema):
 
 
 class LoginSchema(Schema):
-    username = fields.Str(required=True)
+    email = fields.Email(required=True)
     password = fields.Str(required=True)
