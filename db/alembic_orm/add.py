@@ -1,12 +1,13 @@
 import enum
 from sqlalchemy import create_engine, Integer, Float, Column, String, Text, Boolean, DateTime, ForeignKey, Enum, MetaData
 from sqlalchemy.ext.declarative import declarative_base, DeclarativeMeta
-from sqlalchemy.orm import sessionmaker, relationship
+from sqlalchemy.orm import sessionmaker, scoped_session, relationship
 
 engine = create_engine('mysql+pymysql://lab:password@localhost:3306/pplab?charset=utf8mb4')
 metadata = MetaData()
 Base: DeclarativeMeta = declarative_base(metadata)
-Session = sessionmaker(bind=engine)
+session_factory = sessionmaker(bind=engine)
+Session = scoped_session(session_factory)
 
 
 class RoleEnum(enum.Enum):
