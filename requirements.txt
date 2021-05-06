@@ -1,0 +1,12 @@
+Flask
+Flask-Bcrypt
+flask_cors
+alembic
+PyMySQL
+marshmallow
+Flask-HTTPAuth
+cryptography
+marshmallow-enum
+Flask-Testing
+Flask-Cors
+sqlalchemy
