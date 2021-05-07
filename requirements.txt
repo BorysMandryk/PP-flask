@@ -10,3 +10,4 @@ marshmallow-enum
 Flask-Testing
 Flask-Cors
 sqlalchemy
+pyodbc

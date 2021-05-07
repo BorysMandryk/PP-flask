@@ -247,6 +247,14 @@ ed25519 = ["PyNaCl (>=1.4.0)"]
 rsa = ["cryptography"]
 
 [[package]]
+name = "pyodbc"
+version = "4.0.30"
+description = "DB API Module for ODBC"
+category = "main"
+optional = false
+python-versions = "*"
+
+[[package]]
 name = "python-dateutil"
 version = "2.8.1"
 description = "Extensions to the standard Python datetime module"
@@ -319,7 +327,7 @@ watchdog = ["watchdog"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8.5"
-content-hash = "ab5b8d1aafadd85ca4004696ed9187a813521397dfb67764a69342aa4a664e5b"
+content-hash = "4737902d4c0d239a722279f71e89db6f196193c426bbbae27e84b9533b28bbfa"
 
 [metadata.files]
 alembic = [
@@ -520,6 +528,23 @@ pycparser = [
 pymysql = [
     {file = "PyMySQL-0.10.1-py2.py3-none-any.whl", hash = "sha256:44f47128dda8676e021c8d2dbb49a82be9e4ab158b9f03e897152a3a287c69ea"},
     {file = "PyMySQL-0.10.1.tar.gz", hash = "sha256:263040d2779a3b84930f7ac9da5132be0fefcd6f453a885756656103f8ee1fdd"},
+]
+pyodbc = [
+    {file = "pyodbc-4.0.30-cp27-cp27m-win32.whl", hash = "sha256:a1af49a2f4f0abbafdc018d510e31561d3f9472725dc1d49cce3bd2e10e9ec18"},
+    {file = "pyodbc-4.0.30-cp27-cp27m-win_amd64.whl", hash = "sha256:eb9e7a4a5126f2695f307b2a6b0b94cbfccfe7481be2c0d33f5456515328f1cc"},
+    {file = "pyodbc-4.0.30-cp27-none-macosx_10_15_x86_64.whl", hash = "sha256:3a8212be2e49ff29d71d40a9c1af2cdaa71dcc7246cf80a0f9c7254de47ea4a9"},
+    {file = "pyodbc-4.0.30-cp36-cp36m-macosx_10_9_x86_64.whl", hash = "sha256:2f0079951016729b51babebd6aa8112ecef53e11eea3116036c4ec7105f41514"},
+    {file = "pyodbc-4.0.30-cp36-cp36m-win32.whl", hash = "sha256:7113daddcf346ff095904c568d1e1019f567da74058b4e69099e23bc98211691"},
+    {file = "pyodbc-4.0.30-cp36-cp36m-win_amd64.whl", hash = "sha256:d9d1469786519c3b545168b45db7c3ece3b493c89d51bb5732d38a2eac6d0863"},
+    {file = "pyodbc-4.0.30-cp37-cp37m-macosx_10_9_x86_64.whl", hash = "sha256:52a42be6561932d74bbcc5b0f54dcdcf2eceae3b03192fc0db64a5020bbca057"},
+    {file = "pyodbc-4.0.30-cp37-cp37m-win32.whl", hash = "sha256:8fa4147bf3bff1b66a9b1a0063094ca1686b9319383e711e7c193c2b4728b572"},
+    {file = "pyodbc-4.0.30-cp37-cp37m-win_amd64.whl", hash = "sha256:1b8ed92bd50c6d83dec88153880405434bc261bb013ca02809827bb3ffbb319a"},
+    {file = "pyodbc-4.0.30-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:d4ffeab51dcc03c4c1a9a200f70999ce9b827c91defc4f5740633a6d47d3a206"},
+    {file = "pyodbc-4.0.30-cp38-cp38-win32.whl", hash = "sha256:d3ad340e0053b6ec4130957efbcecce6de48d68e7e78792ea7588e27ffa629f1"},
+    {file = "pyodbc-4.0.30-cp38-cp38-win_amd64.whl", hash = "sha256:bce7e41c7cfc06ec976245f361221dfdd0f04e804010cf255cbb36985f6c3406"},
+    {file = "pyodbc-4.0.30-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:3bf7fd4d7a42fa4f0a50cf2418d49cd3c8fa05b8a1972534f0ebfadd92c7ce52"},
+    {file = "pyodbc-4.0.30-cp39-cp39-win_amd64.whl", hash = "sha256:b149b0c2d11833bbd5355a8fe5a8b41fba5518dacdc613a0218fd77c2969a4f5"},
+    {file = "pyodbc-4.0.30.tar.gz", hash = "sha256:852b5deeeb3366af8b4408efed993501708be45d221881bce60c9aac54be726a"},
 ]
 python-dateutil = [
     {file = "python-dateutil-2.8.1.tar.gz", hash = "sha256:73ebfe9dbf22e832286dafa60473e4cd239f8592f699aa5adaf10050e6e1823c"},

@@ -2,8 +2,11 @@ import enum
 from sqlalchemy import create_engine, Integer, Float, Column, String, Text, Boolean, DateTime, ForeignKey, Enum, MetaData
 from sqlalchemy.ext.declarative import declarative_base, DeclarativeMeta
 from sqlalchemy.orm import sessionmaker, scoped_session, relationship
+from sqlalchemy.engine import URL
+connection_string = "Driver={ODBC Driver 17 for SQL Server};Server=tcp:online-pharmacy.database.windows.net,1433;Database=online-pharmacy-main;Uid=web;Pwd=Pp123456;Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;"
+connection_url = URL.create("mssql+pyodbc", query={"odbc_connect": connection_string})
 
-engine = create_engine('mysql+pymysql://lab:password@localhost:3306/pplab?charset=utf8mb4')
+engine = create_engine(connection_url)
 metadata = MetaData()
 Base: DeclarativeMeta = declarative_base(metadata)
 session_factory = sessionmaker(bind=engine)
