@@ -120,6 +120,15 @@ def edit_current_user():
         return return_schema.dump(found_user), 200
 
 
+@app.route('/users/current', methods=["DELETE"])
+@auth.login_required
+def delete_current_user():
+    with session_scope() as session:
+        found_user = session.query(User).filter(User.id == auth.current_user().id).one_or_none()
+        session.delete(found_user)
+        return ''
+
+
 @app.route('/users/<user_id>')
 def find_user(user_id):
     try:
